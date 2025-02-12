@@ -1,6 +1,12 @@
 from math import *
+import os
 
-# This vars is first because of errors
+HISTORY_FILE = "history.txt"
+
+# Создание файла истории, если его нет
+if not os.path.exists(HISTORY_FILE):
+    open(HISTORY_FILE, "w").close()
+
 lang = "eng"
 shure = "n"
 con = "y"
@@ -11,12 +17,11 @@ langerror = "Error: Invalid language"
 while shure == "n":
     lang = input(changeLang)
 
-    # Variables in english
     if lang == "eng":
         changeLang = "Change language (kz/rus/eng) or to exit enter exit: "
         num1word = "Enter first number: "
         num2word = "Enter second number: "
-        opword = "Enter operation (+, -, *, /, ^, sqr): "
+        opword = "Enter operation (+, -, *, /, ^, sqr, history): "
         sumword = "Sum: "
         diffword = "Difference: "
         prodword = "Product: "
@@ -28,12 +33,11 @@ while shure == "n":
         zeroerror = "Error: Division by zero"
         langerror = "Error: Invalid language"
         operror = "Error: Enter correct operation"
-    # Variables in russian
     elif lang == "rus":
         changeLang = "Изменить язык (kz/rus/eng) или чтобы выйти введите exit: "
         num1word = "Введите первое число: "
         num2word = "Введите второе число: "
-        opword = "Введите операцию (+, -, *, /, ^, sqr): "
+        opword = "Введите операцию (+, -, *, /, ^, sqr, history): "
         sumword = "Сумма: "
         diffword = "Разность: "
         prodword = "Произведение: "
@@ -45,12 +49,11 @@ while shure == "n":
         zeroerror = "Ошибка: Деление на ноль"
         langerror = "Ошибка: Неверный язык"
         operror = "Ошибка: Введите правильную операцию"
-    # Variables in kazakh
     elif lang == "kz":
         changeLang = "Тілді өзгерту (kz/rus/eng) немесе шығу үшін exit жазыңыз: "
         num1word = "Бірінші санды енгізіңіз: "
         num2word = "Екінші санды енгізіңіз: "
-        opword = "Операцияны енгізіңіз (+, -, *, /, ^, sqr): "
+        opword = "Операцияны енгізіңіз (+, -, *, /, ^, sqr, history): "
         sumword = "Қосынды: "
         diffword = "Айырмашылық: "
         prodword = "Көбейту: "
@@ -62,20 +65,24 @@ while shure == "n":
         zeroerror = "Қате: Нольға бөлу"
         langerror = "Қате: Дұрыс тілді таңдаңыз"
         operror = "Қате: Дұрыс операция енгізіңіз"
-    # To exit
     elif lang == "exit":
         exit()
-    # If user enters unknown lang
-    if lang != "kz" and lang != "rus" and lang != "eng":
+
+    if lang not in ["kz", "rus", "eng"]:
         print(langerror)
         continue
     shure = input(shureword)
 
-# Operations
 while con == "y":
-    # Op is first because of if/else
     op = input(opword)
-    if op == "sqr":
+    result_str = ""
+
+    if op == "history":
+        with open(HISTORY_FILE, "r") as file:
+            history = file.read()
+        print(history if history else "История пуста.")
+        continue
+    elif op == "sqr":
         num1 = float(input(num1word))
     else:
         num1 = float(input(num1word))
@@ -83,27 +90,33 @@ while con == "y":
 
     match op:
         case "+":
-            print(sumword + str(num1 + num2))
+            result = num1 + num2
+            result_str = f"{num1} + {num2} = {result}"
         case "-":
-            print(diffword + str(num1 - num2))
+            result = num1 - num2
+            result_str = f"{num1} - {num2} = {result}"
         case "*":
-            print(prodword + str(num1 * num2))
+            result = num1 * num2
+            result_str = f"{num1} * {num2} = {result}"
         case "/":
             if num2 == 0:
                 print(zeroerror)
                 continue
-            else:
-                print(quotword + str(num1 / num2))
+            result = num1 / num2
+            result_str = f"{num1} / {num2} = {result}"
         case "^":
-            print(powword + str(pow(num1, num2)))
+            result = pow(num1, num2)
+            result_str = f"{num1} ^ {num2} = {result}"
         case "sqr":
-            print(sqrtword + str(sqrt(num1)))
+            result = sqrt(num1)
+            result_str = f"√{num1} = {result}"
         case _:
             print(operror)
             continue
-    
-    # To ask user
+
+    print(result_str)
+
+    with open(HISTORY_FILE, "a") as file:
+        file.write(result_str + "\n")
+
     con = input(conword)
-
-
-# In plans create calc on C++
